@@ -1,0 +1,50 @@
+stages:
+    - build
+    - style
+    - test
+    - deploy
+
+build-job:
+    stage: build
+    tags:
+        - DO6
+    script:
+        - cd src/C3_SimpleBashUtils-1/src/cat && make
+        - cd ../grep && make
+    after_script:
+        - bash src/part6.sh
+    artifacts:
+        paths:
+            - src/C3_SimpleBashUtils-1/src/cat/s21_cat
+            - src/C3_SimpleBashUtils-1/src/grep/s21_grep
+        expire_in: 30 days
+
+style-job:
+    stage: style
+    tags:
+        - DO6
+    script:
+        - cd src/C3_SimpleBashUtils-1/src/cat && make check
+        - cd ../grep && make check
+    after_script:
+        - bash src/part6.sh
+
+test-job:
+    stage: test
+    tags:
+        - DO6
+    script:
+        - cd src/C3_SimpleBashUtils-1/src/cat && make test
+        - cd ../grep && make test
+    after_script:
+        - bash src/part6.sh
+
+deploy-job:
+    stage: deploy
+    tags:
+        - DO6
+    script:
+        - cd src && bash scriptPart5.sh
+    after_script:
+        - bash src/part6.sh
+    when: manual
